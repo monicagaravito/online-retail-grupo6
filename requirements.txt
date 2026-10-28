@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+plotly
+joblib
+# Usa la MISMA versión que imprime la celda de exportación en Colab
+scikit-learn==1.6.1
