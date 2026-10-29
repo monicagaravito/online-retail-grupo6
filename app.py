@@ -16,7 +16,7 @@ st.set_page_config(page_title="Online Retail - Grupo 6", page_icon="🛒", layou
 COLORES = {
     "Clientes VIP": "#2b9348",
     "Clientes leales": "#2b5c8f",
-    "Clientes en riesgo": "#f4a261",
+    "Clientes nuevos": "#f4a261",
     "Clientes perdidos": "#d9534f",
 }
 
@@ -44,6 +44,10 @@ def cargar_datos():
 modelo = cargar_modelo()
 datos = cargar_datos()
 rfm = datos["rfm"]
+
+# El grupo con compra reciente pero pocas facturas y bajo gasto son clientes nuevos
+RENOMBRAR = {"Clientes en riesgo": "Clientes nuevos"}
+rfm["Segmento"] = rfm["Segmento"].replace(RENOMBRAR)
 
 # ---------- Encabezado ----------
 st.title("🛒 Caso de Estudio UCI Online Retail")
@@ -150,6 +154,7 @@ with tab_pred:
         x = modelo["scaler"].transform(np.log1p(entrada))
         cluster = int(modelo["kmeans"].predict(x)[0])
         segmento = modelo["nombres"][cluster]
+        segmento = RENOMBRAR.get(segmento, segmento)
 
         st.success(f"Segmento asignado: **{segmento}**")
         promedio = perfil.loc[segmento, ["Recency", "Frequency", "Monetary"]]
